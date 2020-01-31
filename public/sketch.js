@@ -1,34 +1,37 @@
-var socket;
+// module aliases
+var Engine = Matter.Engine,
+  //   Render = Matter.Render,
+  World = Matter.World,
+  Bodies = Matter.Bodies;
+
+var engine;
+var world;
+var boxes = [];
+var ground;
 
 function setup() {
   createCanvas(400, 400);
-  background(51);
-  frameRate(24);
-
-  socket = io.connect('http://localhost:3000');
-  socket.on('mouse', newDrawing);
-}
-
-function newDrawing(data) {
-  noStroke();
-  fill(0, 255, 0);
-  ellipse(data.x, data.y, 50, 50);
-
-  noStroke();
-  fill(255, 0, 100);
-  ellipse(data.x, data.y, 30, 30);
-}
-
-function mouseDragged() {
-  console.log('Sending: ' + mouseX + ',' + mouseY);
-
-  var data = {
-    x: mouseX,
-    y: mouseY
+  engine = Engine.create();
+  world = engine.world;
+  Engine.run(engine);
+  var options = {
+    isStatic: true
   };
-  socket.emit('mouse', data);
+  ground = Bodies.rectangle(200, height - 50, width, 60, options);
+  World.add(world, ground);
+}
 
+function mousePressed() {
+  boxes.push(new Box(mouseX, mouseY, 20, 20));
+}
+
+function draw() {
+  background(51);
+  for (var i = 0; i < boxes.length; i++) {
+    boxes[i].show();
+  }
   noStroke();
-  fill(255);
-  ellipse(mouseX, mouseY, 50, 50);
+  fill(170);
+  rectMode(CENTER);
+  rect(ground.position.x, ground.position.y, width, 60);
 }
