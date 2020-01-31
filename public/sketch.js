@@ -24,21 +24,41 @@ function setup() {
   //   World.add(world, ground);
 }
 
-function mouseDragged() {
-  //   boxes.push(new Box(mouseX, mouseY, 20, 20));
-  circles.push(new Circle(mouseX, mouseY, random(5, 10)));
+// function mousePressed() {
+function abcdef() {
+  if (mouseButton === RIGHT) {
+    boxes.push(new Box(mouseX, mouseY, 20, 20));
+  }
+  if (mouseButton === LEFT) {
+    circles.push(new Circle(mouseX, mouseY, random(5, 10)));
+  }
 }
 
 function draw() {
   background(51);
   Engine.update(engine);
-  //   for (var i = 0; i < boxes.length; i++) {
-  //     boxes[i].show();
-  //   }
+  for (var i = 0; i < boxes.length; i++) {
+    boxes[i].show();
+    if (boxes[i].isOffScreen()) {
+      boxes[i].removeFromWorld();
+      boxes.splice(i, 1);
+      i--;
+    }
+  }
+  if (mouseIsPressed) {
+    abcdef();
+  }
   for (var i = 0; i < circles.length; i++) {
     circles[i].show();
+    if (circles[i].isOffScreen()) {
+      circles[i].removeFromWorld();
+      circles.splice(i, 1);
+      i--;
+    }
   }
   for (var i = 0; i < boundaries.length; i++) {
     boundaries[i].show();
   }
+
+  console.log(circles.length + boxes.length, world.bodies.length);
 }
